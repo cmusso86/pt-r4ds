@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt" xml:lang="pt"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Hadley Wickham, Mine Çetinkaya-Rundel, e Garrett Grolemund">
+<title>R para Ciência de Dados (2ª edição) - 5&nbsp; Organizando os dados (data tidying)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./workflow-scripts.html" rel="next">
+<link href="./workflow-style.html" rel="prev">
+<link href="./cover.jpg" rel="icon" type="image/jpeg">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Nenhum resultado",
+    "search-matching-documents-text": "documentos correspondentes",
+    "search-copy-link-title": "Copiar link para a busca",
+    "search-hide-matches-text": "Esconder correspondências adicionais",
+    "search-more-match-text": "mais correspondência neste documento",
+    "search-more-matches-text": "mais correspondências neste documento",
+    "search-clear-button-title": "Limpar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Procurar"
+  }
+}</script><script defer="" data-domain="r4ds.hadley.nz" src="https://plausible.io/js/plausible.js"></script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./whole-game.html">Visão geral</a></li><li class="breadcrumb-item"><a href="./data-tidy.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Organizando os dados (<em>data tidying</em>)</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">R para Ciência de Dados (2ª edição)</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/cienciadedatos/pt-r4ds/" title="Código fonte" class="quarto-navigation-tool px-1" aria-label="Código fonte"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo de leitor">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Procurar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Boas-vindas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface-2e.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefácio da segunda edição</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introdução</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./whole-game.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visão geral</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Alternar seção">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-visualize.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Visualização de dados</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflow-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Fluxo de Trabalho: básico</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-transform.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Data transformation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflow-style.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Fluxo de trabalho: estilo de código</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-tidy.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Organizando os dados (<em>data tidying</em>)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflow-scripts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Workflow: scripts and projects</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-import.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data import</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflow-help.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Workflow: getting help</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./visualize.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualizar</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Alternar seção">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./layers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Layers</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./EDA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Exploratory data analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./communication.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Communication</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./transform.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Transformar</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Alternar seção">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./logicals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Vetores lógicos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./numbers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Números</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./strings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Strings</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./regexps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Regular expressions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./factors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Factors</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./datetimes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Dates and times</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./missing-values.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Missing values</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./joins.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Joins</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./import.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Importar</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Alternar seção">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./spreadsheets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Spreadsheets</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./databases.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Databases</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./arrow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Arrow</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rectangling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Hierarchical data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./webscraping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Web scraping</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./program.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Programar</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Alternar seção">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./iteration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Iteration</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./base-R.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Um guia para o R base</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./communicate.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Comunicar</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Alternar seção">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Quarto</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quarto-formats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Quarto formats</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Índice</h2>
+   
+  <ul>
+<li>
+<a href="#introdu%C3%A7%C3%A3o" id="toc-introdução" class="nav-link active" data-scroll-target="#introdu%C3%A7%C3%A3o"><span class="header-section-number">5.1</span> Introdução</a>
+  <ul class="collapse">
+<li><a href="#pr%C3%A9-requisitos" id="toc-pré-requisitos" class="nav-link" data-scroll-target="#pr%C3%A9-requisitos"><span class="header-section-number">5.1.1</span> Pré-requisitos</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-tidy-data" id="toc-sec-tidy-data" class="nav-link" data-scroll-target="#sec-tidy-data"><span class="header-section-number">5.2</span> Dados organizados (<em>tidy data</em>)</a>
+  <ul class="collapse">
+<li><a href="#exerc%C3%ADcios" id="toc-exercícios" class="nav-link" data-scroll-target="#exerc%C3%ADcios"><span class="header-section-number">5.2.1</span> Exercícios</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-pivoting" id="toc-sec-pivoting" class="nav-link" data-scroll-target="#sec-pivoting"><span class="header-section-number">5.3</span> Alongando os dados</a>
+  <ul class="collapse">
+<li><a href="#sec-billboard" id="toc-sec-billboard" class="nav-link" data-scroll-target="#sec-billboard"><span class="header-section-number">5.3.1</span> Dados nos nomes das colunas</a></li>
+  <li><a href="#como-a-pivotagem-funciona" id="toc-como-a-pivotagem-funciona" class="nav-link" data-scroll-target="#como-a-pivotagem-funciona"><span class="header-section-number">5.3.2</span> Como a pivotagem funciona?</a></li>
+  <li><a href="#muitas-vari%C3%A1veis-nos-nomes-de-colunas" id="toc-muitas-variáveis-nos-nomes-de-colunas" class="nav-link" data-scroll-target="#muitas-vari%C3%A1veis-nos-nomes-de-colunas"><span class="header-section-number">5.3.3</span> Muitas variáveis nos nomes de colunas</a></li>
+  <li><a href="#dados-e-nomes-de-vari%C3%A1veis-nos-cabe%C3%A7alhos-das-colunas" id="toc-dados-e-nomes-de-variáveis-nos-cabeçalhos-das-colunas" class="nav-link" data-scroll-target="#dados-e-nomes-de-vari%C3%A1veis-nos-cabe%C3%A7alhos-das-colunas"><span class="header-section-number">5.3.4</span> Dados e nomes de variáveis nos cabeçalhos das colunas</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#transformando-os-dados-para-o-formato-largo-widening-data" id="toc-transformando-os-dados-para-o-formato-largo-widening-data" class="nav-link" data-scroll-target="#transformando-os-dados-para-o-formato-largo-widening-data"><span class="header-section-number">5.4</span> Transformando os dados para o formato largo (<em>Widening data</em>)</a>
+  <ul class="collapse">
+<li><a href="#como-funciona-a-fun%C3%A7%C3%A3o-pivot_wider" id="toc-como-funciona-a-função-pivot_wider" class="nav-link" data-scroll-target="#como-funciona-a-fun%C3%A7%C3%A3o-pivot_wider"><span class="header-section-number">5.4.1</span> Como funciona a função <code>pivot_wider()</code>?</a></li>
+  </ul>
+</li>
+  <li><a href="#resumo" id="toc-resumo" class="nav-link" data-scroll-target="#resumo"><span class="header-section-number">5.5</span> Resumo</a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/cienciadedatos/pt-r4ds/edit/main/data-tidy.qmd" class="toc-action"><i class="bi bi-github"></i>Editar essa página</a></li><li><a href="https://github.com/cienciadedatos/pt-r4ds/issues/new" class="toc-action"><i class="bi empty"></i>Criar uma issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./whole-game.html">Visão geral</a></li><li class="breadcrumb-item"><a href="./data-tidy.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Organizando os dados (<em>data tidying</em>)</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title"><span id="sec-data-tidy" class="quarto-section-identifier"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Organizando os dados (<em>data tidying</em>)</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><section id="introdução" class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="introdução">
+<span class="header-section-number">5.1</span> Introdução</h2>
+<blockquote class="blockquote">
+<p>“Todas as famílias felizes se parecem, cada família infeliz é infeliz à sua maneira.”<br>
+— Leo Tolstoy</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>“Todos os conjuntos de dados organizados se parecem, cada conjunto de dados bagunçados são bagunçados à sua maneira.”<br>
+— Hadley Wickham</p>
+</blockquote>
+<p>Neste capítulo, você vai aprender uma forma consistente de organizar seus dados no R utilizando um sistema chamado <strong>tidy data</strong>. Colocar seus dados nesse formato requer alguma preparação, mas esse é um trabalho que se paga ao longo prazo. Uma vez que você tenha os dados organizados (<em>tidy</em>) e as ferramentas do pacote tidyverse, você irá gastar muito menos tempo transformando-os entre uma representação e outra, permitindo que você gaste mais tempo nas questões que realmente te importam.</p>
+<p>Neste capítulo, você primeiro vai aprender sobre a definição do formato <em>tidy</em> e vê-lo sendo aplicado em um conjunto de dados de exemplo. Em seguida, você vai mergulhar na principal ferramenta que utilizará para organizar os dados: a pivotagem (<em>pivoting</em>). Pivotar lhe permite mudar a forma dos dados sem modificar nenhum de seus valores.</p>
+<section id="pré-requisitos" class="level3" data-number="5.1.1"><h3 data-number="5.1.1" class="anchored" data-anchor-id="pré-requisitos">
+<span class="header-section-number">5.1.1</span> Pré-requisitos</h3>
+<p>Neste capítulo, vamos focar no <code>tidyr</code>, um pacote que disponibliza uma variedade de ferramentas para te ajudar a organizar seus conjuntos de dados bagunçados. <code>tidyr</code> faz parte do grupo de pacotes mais importantes do tidyverse (conhecidos como <em>core tidyverse</em>).</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cienciadedatos/dados">dados</a></span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Deste capítulo em diante, vamos suprimir a mensagem de carregamento <code><a href="https://tidyverse.tidyverse.org">library(tidyverse)</a></code>.</p>
+</section></section><section id="sec-tidy-data" class="level2" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="sec-tidy-data">
+<span class="header-section-number">5.2</span> Dados organizados (<em>tidy data</em>)</h2>
+<p>É possível representar os mesmos dados de diversas formas. O exemplo abaixo mostra os mesmos dados organizados de três formas diferentes. Cada conjunto de dados mostra os mesmos valores de quatro variáveis: <em>país</em>, <em>ano</em>, <em>população</em>, e o número de <em>casos</em> documentados de tuberculose. No entanto, cada conjunto de dados organiza os valores de uma forma diferente.</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tabela1</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+  pais          ano  casos  populacao
+  &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;
+1 Afeganistão  1999    745   19987071
+2 Afeganistão  2000   2666   20595360
+3 Brasil       1999  37737  172006362
+4 Brasil       2000  80488  174504898
+5 China        1999 212258 1272915272
+6 China        2000 213766 1280428583</code></pre>
+</div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tabela2</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 12 × 4
+   pais          ano tipo        contagem
+   &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt;
+ 1 Afeganistão  1999 casos            745
+ 2 Afeganistão  1999 população   19987071
+ 3 Afeganistão  2000 casos           2666
+ 4 Afeganistão  2000 população   20595360
+ 5 Brasil       1999 casos          37737
+ 6 Brasil       1999 população  172006362
+ 7 Brasil       2000 casos          80488
+ 8 Brasil       2000 população  174504898
+ 9 China        1999 casos         212258
+10 China        1999 população 1272915272
+11 China        2000 casos         213766
+12 China        2000 população 1280428583</code></pre>
+</div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tabela3</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  pais          ano taxa             
+  &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;            
+1 Afeganistão  1999 745/19987071     
+2 Afeganistão  2000 2666/20595360    
+3 Brasil       1999 37737/172006362  
+4 Brasil       2000 80488/174504898  
+5 China        1999 212258/1272915272
+6 China        2000 213766/1280428583</code></pre>
+</div>
+</div>
+<p>Todas essas são representações dos mesmos dados. Mas nem todas são igualmente fáceis de se utilizar. Uma delas, <code>tabela1</code>, será muito mais fácil de trabalhar dentro do tidyverse porque está no formato <strong>tidy</strong>.</p>
+<p>Existem três regras interrelacionadas que fazem com que um conjunto de dados seja considerado <em>tidy</em>:</p>
+<ol type="1">
+<li>Cada variável é uma coluna; cada coluna é uma variável.</li>
+<li>Cada observação é uma linha; cada linha é uma observação.</li>
+<li>Cada valor é uma célula; cada célula é um único valor.</li>
+</ol>
+<p><a href="#fig-tidy-structure" class="quarto-xref">Figura&nbsp;<span>5.1</span></a> mostra essas regras visualmente.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-tidy-structure" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Três painéis, cada um representando um _data frame_ em formato tidy. O primeiro painel mostra que cada variável é uma coluna. O segundo painel mostra que cada observação é uma linha. O terceiro painel mostra que cada valor é uma célula.">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-tidy-structure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/tidy-1.png" class="img-fluid figure-img" alt="Três painéis, cada um representando um _data frame_ em formato tidy. O primeiro painel mostra que cada variável é uma coluna. O segundo painel mostra que cada observação é uma linha. O terceiro painel mostra que cada valor é uma célula." width="683">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tidy-structure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;5.1: As seguintes três regras tornam um conjunto de dados tidy: variáveis são colunas, observações são linhas e valores são células.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Por que garantir que seus dados estão no formato <em>tidy</em>? Existem duas principais vantagens:</p>
+<ol type="1">
+<li><p>Há uma vantagem generalizada em escolher uma forma consistente de armazenar os dados. Se você tiver uma estrutura de dados consistente, é mais fácil compreender as ferramentas adequadas a ela, pois ela terá uma uniformidade intrínseca.</p></li>
+<li><p>Há uma vantagem específica em colocar as variáveis em colunas porque isso permite que a natureza vetorial do R possa brilhar. Como você aprendeu em <a href="data-transform.html#sec-mutate" class="quarto-xref"><span>Seção 3.3.1</span></a> e <a href="data-transform.html#sec-summarize" class="quarto-xref"><span>Seção 3.5.2</span></a>, a maioria das funções nativas do R trabalham com vetores de valores. Isso torna natural as transformações sobre dados no formato <em>tidy</em>.</p></li>
+</ol>
+<p><code>dplyr</code>, <code>ggplot2</code>, e todos os demais pacotes do tidyverse foram pensados para trabalhar com dados <em>tidy</em>. Aqui estão alguns pequenos exemplos mostrando como é possível trabalhar com <code>tabela1</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Calcular a taxa (_rate_) por 10.000</span></span>
+<span><span class="va">tabela1</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>taxa <span class="op">=</span> <span class="va">casos</span> <span class="op">/</span> <span class="va">populacao</span> <span class="op">*</span> <span class="fl">10000</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 5
+  pais          ano  casos  populacao  taxa
+  &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;
+1 Afeganistão  1999    745   19987071 0.373
+2 Afeganistão  2000   2666   20595360 1.29 
+3 Brasil       1999  37737  172006362 2.19 
+4 Brasil       2000  80488  174504898 4.61 
+5 China        1999 212258 1272915272 1.67 
+6 China        2000 213766 1280428583 1.67 </code></pre>
+</div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Calcular o total de casos por ano </span></span>
+<span><span class="va">tabela1</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">ano</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>total_casos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">casos</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+    ano total_casos
+  &lt;dbl&gt;       &lt;dbl&gt;
+1  1999      250740
+2  2000      296920</code></pre>
+</div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Visualizar mudanças ao longo do tempo</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">tabela1</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">ano</span>, y <span class="op">=</span> <span class="va">casos</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>group <span class="op">=</span> <span class="va">pais</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">pais</span>, shape <span class="op">=</span> <span class="va">pais</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1999</span>, <span class="fl">2000</span><span class="op">)</span><span class="op">)</span> <span class="co"># quebras (breaks) no eixo-x em 1999 e 2000</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="data-tidy_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" alt="Essa figura mostra o número de casos em 1999 e 2000 para Afeganistão, Brasil e China, com ano no eixo-x e o número de casos no eixo-y. Cada ponto no gráfico representa o número de casos em um dado país em um dado ano. Os pontos para cada país são diferenciados dos outros por cor e forma e estão conectados por uma linha, resultando em três linhas não paralelas e sem interseção. Os números de casos na China são mais altos tanto para 1999 quanto para 2000, com valores acima de 200.000 casos para ambos os anos. O número de casos no Brasil é de aproximadamente 40.000 casos em 1999 e aproximadamente 75.000 casos em 2000. O número de casos no Afeganistão são os mais baixos tanto para 1999 quanto para 2000, com valores que parecem estar muito perto do 0 nessa escala." width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="exercícios" class="level3" data-number="5.2.1"><h3 data-number="5.2.1" class="anchored" data-anchor-id="exercícios">
+<span class="header-section-number">5.2.1</span> Exercícios</h3>
+<ol type="1">
+<li><p>Para cada uma das tabelas do exemplo, descreva o que cada observação e cada coluna representa.</p></li>
+<li>
+<p>Faça um esboço do processo que você usaria para calcular <code>taxa</code> para a <code>tabela2</code> e <code>tabela3</code>. Você precisará executar quatro operações:</p>
+<ol type="a">
+<li>Extrair o número de casos de tuberculose por país por ano.</li>
+<li>Extrair a população correspondente por país por ano.</li>
+<li>Dividir os casos pela população e multiplicar por 10000.</li>
+<li>Armazenar de volta no local apropriado.</li>
+</ol>
+<p>Você ainda não aprendeu todas as funções necessárias para, de fato, executar essas operações, mas ainda assim você deve ser capaz de pensar sobre as transformações que você precisaria.</p>
+</li>
+</ol></section></section><section id="sec-pivoting" class="level2" data-number="5.3"><h2 data-number="5.3" class="anchored" data-anchor-id="sec-pivoting">
+<span class="header-section-number">5.3</span> Alongando os dados</h2>
+<p>Os princípios do formato <em>tidy</em> parecem ser tão óbvios que você deve estar se perguntando se algum dia vai encontrar algum cojunto de dados que não esteja nesse formato. Infelizmente, porém, a maioria dos dados reais não estão nesse formato. Existem dois motivos principais:</p>
+<ol type="1">
+<li><p>Geralmente os dados estão organizados para facilitar algum outro objetivo além da análise. Por exemplo, é comum os dados estarem estruturados para facilitar a entrada de novos dados e não a análise dos mesmos.</p></li>
+<li><p>A maioria das pessoas não está familiarizada com os princípios do formato <em>tidy</em> e é difícil derivá-lo espontaneamente a menos que já se tenha trabalhado com dados por muito tempo.</p></li>
+</ol>
+<p>Isso significa que a maioria das análises reais vai demandar pelo menos alguma adaptação para o formato <em>tidy</em>. Você vai começar descobrindo quais são as variáveis e observações presentes. Algumas vezes isso é fácil, em outras você precisará consultar as pessoas que geraram os dados originalmente. Em seguida, você irá *pivotar** seus dados para o formato <em>tidy</em>, com as variáveis nas colunas e as observações nas linhas.</p>
+<p><code>tidyr</code> disponibiliza duas funções para pivotar os dados: <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> e <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider()</a></code>. Começaremos com <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> pois é o caso mais comum. Vamos nos aprofundar em alguns exemplos.</p>
+<section id="sec-billboard" class="level3" data-number="5.3.1"><h3 data-number="5.3.1" class="anchored" data-anchor-id="sec-billboard">
+<span class="header-section-number">5.3.1</span> Dados nos nomes das colunas</h3>
+<p>O conjunto de dados <code>top100musicas</code> marca a posição das músicas na billboard no ano 2000:</p>
+<div class="cell">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">top100musicas</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 317 × 79
+   artista        musica data.adicionada semana1 semana2 semana3 semana4 semana5
+   &lt;chr&gt;          &lt;chr&gt;  &lt;date&gt;            &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+ 1 2 Pac          Baby … 2000-02-26           87      82      72      77      87
+ 2 2Ge+her        The H… 2000-09-02           91      87      92      NA      NA
+ 3 3 Doors Down   Krypt… 2000-04-08           81      70      68      67      66
+ 4 3 Doors Down   Loser  2000-10-21           76      76      72      69      67
+ 5 504 Boyz       Wobbl… 2000-04-15           57      34      25      17      17
+ 6 98^0           Give … 2000-08-19           51      39      34      26      26
+ 7 A*Teens        Danci… 2000-07-08           97      97      96      95     100
+ 8 Aaliyah        I Don… 2000-01-29           84      62      51      41      38
+ 9 Aaliyah        Try A… 2000-03-18           59      53      38      28      21
+10 Adams, Yolanda Open … 2000-08-26           76      76      74      69      68
+# ℹ 307 more rows
+# ℹ 71 more variables: semana6 &lt;dbl&gt;, semana7 &lt;dbl&gt;, semana8 &lt;dbl&gt;,
+#   semana9 &lt;dbl&gt;, semana10 &lt;dbl&gt;, semana11 &lt;dbl&gt;, semana12 &lt;dbl&gt;,
+#   semana13 &lt;dbl&gt;, semana14 &lt;dbl&gt;, semana15 &lt;dbl&gt;, semana16 &lt;dbl&gt;,
+#   semana17 &lt;dbl&gt;, semana18 &lt;dbl&gt;, semana19 &lt;dbl&gt;, semana20 &lt;dbl&gt;,
+#   semana21 &lt;dbl&gt;, semana22 &lt;dbl&gt;, semana23 &lt;dbl&gt;, semana24 &lt;dbl&gt;,
+#   semana25 &lt;dbl&gt;, semana26 &lt;dbl&gt;, semana27 &lt;dbl&gt;, semana28 &lt;dbl&gt;, …</code></pre>
+</div>
+</div>
+<p>Nesse conjunto de dados, cada observação é uma música. As três primeiras colunas (<code>artista</code>, <code>musica</code> e <code>data.adicionada</code>) são variáveis que descrevem a música. Em seguida, temos 76 colunas (<code>semana1</code>-<code>semana76</code>) que descrevem a posição da música em cada semana<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Aqui, o nome das colunas é uma variável (a <code>semana</code>) e o valor da célula é outra (a <code>posicao</code>).</p>
+<p>Para transformar esses dados em <em>tidy</em>, vamos usar <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">top100musicas</span><span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span></span>
+<span>    cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"semana"</span><span class="op">)</span>, </span>
+<span>    names_to <span class="op">=</span> <span class="st">"semana"</span>, </span>
+<span>    values_to <span class="op">=</span> <span class="st">"posicao"</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 24,092 × 5
+   artista musica                  data.adicionada semana   posicao
+   &lt;chr&gt;   &lt;chr&gt;                   &lt;date&gt;          &lt;chr&gt;      &lt;dbl&gt;
+ 1 2 Pac   Baby Don't Cry (Keep... 2000-02-26      semana1       87
+ 2 2 Pac   Baby Don't Cry (Keep... 2000-02-26      semana2       82
+ 3 2 Pac   Baby Don't Cry (Keep... 2000-02-26      semana3       72
+ 4 2 Pac   Baby Don't Cry (Keep... 2000-02-26      semana4       77
+ 5 2 Pac   Baby Don't Cry (Keep... 2000-02-26      semana5       87
+ 6 2 Pac   Baby Don't Cry (Keep... 2000-02-26      semana6       94
+ 7 2 Pac   Baby Don't Cry (Keep... 2000-02-26      semana7       99
+ 8 2 Pac   Baby Don't Cry (Keep... 2000-02-26      semana8       NA
+ 9 2 Pac   Baby Don't Cry (Keep... 2000-02-26      semana9       NA
+10 2 Pac   Baby Don't Cry (Keep... 2000-02-26      semana10      NA
+# ℹ 24,082 more rows</code></pre>
+</div>
+</div>
+<p>Na função, são três argumentos principais, após os dados:</p>
+<ul>
+<li>
+<code>cols</code> especifica quais colunas precisarão ser pivotadas, ou seja, quais colunas ainda não são variáveis. Esse argumento usa a mesma sintaxe que a função <code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code> então aqui poderíamos usar <code>!c(artista, musica, data.adicionada)</code> ou <code>starts_with("semana")</code>.</li>
+<li>
+<code>names_to</code> nomeia a variável armazenada nos nomes das colunas, nós nomeamos aquela variável como <code>semana</code>.</li>
+<li>
+<code>values_to</code> nomeia a variável armazenada nos valores das células, nós nomeamos aquela variável como <code>posicao</code>.</li>
+</ul>
+<p>Note que os códigos <code>"semana"</code> e <code>"posicao"</code> estão entre aspas porque essas são novas variáveis que estamos criando, elas ainda não existem nos dados quando a gente faz a chamada à <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code>.</p>
+<p>Agora voltaremos nossa atenção ao <em>data frame</em> resultante, em um formato mais longo. O que acontece se uma música fica no top 100 por menos que 76 semanas? Vejamos “Baby Don’t Cry” do 2 Pac, por exemplo. A saída acima sugere que ela ficou apenas 7 semanas no top 100, e todas as demais semanas foram preenchidas por valores ausentes. Esses <code>NA</code>s, na verdade, não representam observações desconhecidas; eles foram forçadas a existir pela estrutura do conjunto de dados <a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, então podemos pedir para a <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> se livrar deles por meio do parâmetro <code>values_drop_na = TRUE</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">top100musicas</span><span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span></span>
+<span>    cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"semana"</span><span class="op">)</span>, </span>
+<span>    names_to <span class="op">=</span> <span class="st">"semana"</span>, </span>
+<span>    values_to <span class="op">=</span> <span class="st">"posicao"</span>,</span>
+<span>    values_drop_na <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5,307 × 5
+   artista musica                  data.adicionada semana  posicao
+   &lt;chr&gt;   &lt;chr&gt;                   &lt;date&gt;          &lt;chr&gt;     &lt;dbl&gt;
+ 1 2 Pac   Baby Don't Cry (Keep... 2000-02-26      semana1      87
+ 2 2 Pac   Baby Don't Cry (Keep... 2000-02-26      semana2      82
+ 3 2 Pac   Baby Don't Cry (Keep... 2000-02-26      semana3      72
+ 4 2 Pac   Baby Don't Cry (Keep... 2000-02-26      semana4      77
+ 5 2 Pac   Baby Don't Cry (Keep... 2000-02-26      semana5      87
+ 6 2 Pac   Baby Don't Cry (Keep... 2000-02-26      semana6      94
+ 7 2 Pac   Baby Don't Cry (Keep... 2000-02-26      semana7      99
+ 8 2Ge+her The Hardest Part Of ... 2000-09-02      semana1      91
+ 9 2Ge+her The Hardest Part Of ... 2000-09-02      semana2      87
+10 2Ge+her The Hardest Part Of ... 2000-09-02      semana3      92
+# ℹ 5,297 more rows</code></pre>
+</div>
+</div>
+<p>O número de linhas agora é muito menor, indicando que várias linhas que continham apenas <code>NA</code>s foram removidas.</p>
+<p>Você também poderia estar se perguntando: o que aconteceria caso a música ficasse no top 100 por mais que 76 semanas? Não é possível dizer apenas com esses dados, mas você poderia imaginar que colunas adicionais <code>semana77</code>, <code>semana78</code>, … seriam incluídas no conjunto de dados.</p>
+<p>Esses dados agora estão no formato <em>tidy</em>, mas nós ainda podemos facilitar cálculos futuros ao converter os valores da coluna <code>semana</code> de caracteres para números utilizando <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> e <code><a href="https://readr.tidyverse.org/reference/parse_number.html">readr::parse_number()</a></code>. <code><a href="https://readr.tidyverse.org/reference/parse_number.html">parse_number()</a></code> é uma função bem útil que irá extrair o primeiro número de uma sequência de caracteres (<em>string</em>) e vai ignorar todo o resto.</p>
+<div class="cell">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">top100musicas_longo</span> <span class="op">&lt;-</span> <span class="va">top100musicas</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span></span>
+<span>    cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"semana"</span><span class="op">)</span>, </span>
+<span>    names_to <span class="op">=</span> <span class="st">"semana"</span>, </span>
+<span>    values_to <span class="op">=</span> <span class="st">"posicao"</span>,</span>
+<span>    values_drop_na <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
+<span>    semana <span class="op">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/parse_number.html">parse_number</a></span><span class="op">(</span><span class="va">semana</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="va">top100musicas_longo</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5,307 × 5
+   artista musica                  data.adicionada semana posicao
+   &lt;chr&gt;   &lt;chr&gt;                   &lt;date&gt;           &lt;dbl&gt;   &lt;dbl&gt;
+ 1 2 Pac   Baby Don't Cry (Keep... 2000-02-26           1      87
+ 2 2 Pac   Baby Don't Cry (Keep... 2000-02-26           2      82
+ 3 2 Pac   Baby Don't Cry (Keep... 2000-02-26           3      72
+ 4 2 Pac   Baby Don't Cry (Keep... 2000-02-26           4      77
+ 5 2 Pac   Baby Don't Cry (Keep... 2000-02-26           5      87
+ 6 2 Pac   Baby Don't Cry (Keep... 2000-02-26           6      94
+ 7 2 Pac   Baby Don't Cry (Keep... 2000-02-26           7      99
+ 8 2Ge+her The Hardest Part Of ... 2000-09-02           1      91
+ 9 2Ge+her The Hardest Part Of ... 2000-09-02           2      87
+10 2Ge+her The Hardest Part Of ... 2000-09-02           3      92
+# ℹ 5,297 more rows</code></pre>
+</div>
+</div>
+<p>Agora que temos todos os números das semanas em uma única variável e todas as posições em outra, é um bom ponto para visualizar como a posição das músicas varia ao longo do tempo. O código é mostrado abaixo e o resultado está em <a href="#fig-billboard-ranks" class="quarto-xref">Figura&nbsp;<span>5.2</span></a>. Nós podemos ver que muito poucas músicas permanecem no top 100 por mais de 20 semanas.</p>
+<div class="cell">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">top100musicas_longo</span><span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">semana</span>, y <span class="op">=</span> <span class="va">posicao</span>, group <span class="op">=</span> <span class="va">posicao</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_reverse</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-billboard-ranks" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Um gráfico de linhas com semana no eixo-x e posição no eixo-y, onde cada linha representa uma música. A maioria das músicas parece começar em uma posição alta, acelerar rapidamente para uma posição mais baixa e depois cair novamente. Existem notavelmente poucas faixas na região em que a semana é >20 e a posição é >50.">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-billboard-ranks-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="data-tidy_files/figure-html/fig-billboard-ranks-1.png" class="img-fluid figure-img" alt="Um gráfico de linhas com semana no eixo-x e posição no eixo-y, onde cada linha representa uma música. A maioria das músicas parece começar em uma posição alta, acelerar rapidamente para uma posição mais baixa e depois cair novamente. Existem notavelmente poucas faixas na região em que a semana é >20 e a posição é >50." width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-billboard-ranks-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;5.2: Um gráfico de linhas mostrando como as posições de uma música muda ao longo do tempo.
+</figcaption></figure>
+</div>
+</div>
+</div>
+</section><section id="como-a-pivotagem-funciona" class="level3" data-number="5.3.2"><h3 data-number="5.3.2" class="anchored" data-anchor-id="como-a-pivotagem-funciona">
+<span class="header-section-number">5.3.2</span> Como a pivotagem funciona?</h3>
+<p>Agora que você já viu como usar a pivotagem para mudar a forma de nossos dados, vamos tomar um tempinho para ganhar alguma intuição sobre o que a pivotagem faz com os dados. Vamos começar com um conjunto de dados bem simples para enxergamos com mais facilidade o que está acontecendo. Suponha que temos três pacientes com <code>id</code>s A, B e C, e fazemos a medição da pressão sanguínea duas vezes para cadas paciente. Vamos criar os dados com <code><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble()</a></code>, uma função útil para construir pequenos conjuntos de dados (<em>tibbles</em>) manualmente:</p>
+<div class="cell">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># ps - "pressão sanguínea"</span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span></span>
+<span>  <span class="op">~</span><span class="va">id</span>,  <span class="op">~</span><span class="va">ps1</span>, <span class="op">~</span><span class="va">ps2</span>,</span>
+<span>   <span class="st">"A"</span>,  <span class="fl">100</span>,  <span class="fl">120</span>,</span>
+<span>   <span class="st">"B"</span>,  <span class="fl">140</span>,  <span class="fl">115</span>,</span>
+<span>   <span class="st">"C"</span>,  <span class="fl">120</span>,  <span class="fl">125</span></span>
+<span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Nós queremos que nosso conjunto de dados tenham três variáveis: <code>id</code> (já existe), <code>medicao</code> (o nome das colunas), e <code>valor</code> (valor das células). Para obter essa forma, precisamos pivotar <code>df</code> para um formato mais longo:</p>
+<div class="cell">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span></span>
+<span>    cols <span class="op">=</span> <span class="va">ps1</span><span class="op">:</span><span class="va">ps2</span>,</span>
+<span>    names_to <span class="op">=</span> <span class="st">"medicao"</span>,</span>
+<span>    values_to <span class="op">=</span> <span class="st">"valor"</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  id    medicao valor
+  &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt;
+1 A     ps1       100
+2 A     ps2       120
+3 B     ps1       140
+4 B     ps2       115
+5 C     ps1       120
+6 C     ps2       125</code></pre>
+</div>
+</div>
+<p>Como funciona essa mudança de formato? É mais fácil de ver se pensarmos coluna por coluna. Como mostrado em <a href="#fig-pivot-variables" class="quarto-xref">Figura&nbsp;<span>5.3</span></a>, os valores de uma coluna que já eram uma variável nos dados originais (<code>id</code>) precisam ser repetidos uma vez para cada coluna que foi pivotada.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-pivot-variables" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Um diagrama mostrando como `pivot_longer()` transforma um simples conjunto de dados, utilizando cores para destacar como cada um dos valores da coluna `id` (&quot;A&quot;, &quot;B&quot;, &quot;C&quot;) são repetidos duas vezes na saída por que há duas colunas sendo pivotadas (&quot;ps1&quot; e &quot;ps2&quot;).">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pivot-variables-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="diagrams/tidy-data/variables.png" class="img-fluid figure-img" alt="Um diagrama mostrando como `pivot_longer()` transforma um simples conjunto de dados, utilizando cores para destacar como cada um dos valores da coluna `id` (&quot;A&quot;, &quot;B&quot;, &quot;C&quot;) são repetidos duas vezes na saída por que há duas colunas sendo pivotadas (&quot;ps1&quot; e &quot;ps2&quot;)." width="515">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pivot-variables-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;5.3: Colunas que já são variáveis precisam ser repetidas uma vez para cada coluna que é pivotada.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Os nomes das colunas se tornam valores em uma nova variável, cujo nome foi definido pelo parâmetro <code>names_to</code>, conforme mostrado em <a href="#fig-pivot-names" class="quarto-xref">Figura&nbsp;<span>5.4</span></a>. Eles precisam ser repetidos uma vez para cada linha dos dados originais.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-pivot-names" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Um diagrama mostrando como `pivot_longer()` transforma um simples conjunto de dados, utilizando cores para destacar como os nomes das colunas (&quot;ps1&quot; e &quot;ps2&quot;) se tornam valores em uma nova coluna `medicao`. Eles são repetidos três vezes porque havia três linhas na entrada.">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pivot-names-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="diagrams/tidy-data/column-names.png" class="img-fluid figure-img" alt="Um diagrama mostrando como `pivot_longer()` transforma um simples conjunto de dados, utilizando cores para destacar como os nomes das colunas (&quot;ps1&quot; e &quot;ps2&quot;) se tornam valores em uma nova coluna `medicao`. Eles são repetidos três vezes porque havia três linhas na entrada." width="515">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pivot-names-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;5.4: Os nomes das colunas pivotadas se tornam valores em uma nova coluna. Os valores precisam ser reptidos uma vez para cada linha dos dados originais.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Os valores das células também se tornam valores em uma nova variável, com o nome definido por <code>values_to</code>. Eles são “desenrolados” linha a linha. <a href="#fig-pivot-values" class="quarto-xref">Figura&nbsp;<span>5.5</span></a> ilustra o processo.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-pivot-values" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Um diagrama mostrando como `pivot_longer()` transforma os dados, utilizando cores para destacar como os valores das células (medidas de pressão sanguínea) se tornam valores em uma nova coluna `valor`. Eles são &quot;desenrolados&quot; linha-a-linha, então as linhas originais (100,120), depois (140,115) e depois (120,125), se tornam uma coluna que vai de 100 a 125.">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pivot-values-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="diagrams/tidy-data/cell-values.png" class="img-fluid figure-img" alt="Um diagrama mostrando como `pivot_longer()` transforma os dados, utilizando cores para destacar como os valores das células (medidas de pressão sanguínea) se tornam valores em uma nova coluna `valor`. Eles são &quot;desenrolados&quot; linha-a-linha, então as linhas originais (100,120), depois (140,115) e depois (120,125), se tornam uma coluna que vai de 100 a 125." width="515">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pivot-values-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;5.5: O número de valores é preservado (não repetidos), mas “desenrolado” linha-a-linha.
+</figcaption></figure>
+</div>
+</div>
+</div>
+</section><section id="muitas-variáveis-nos-nomes-de-colunas" class="level3" data-number="5.3.3"><h3 data-number="5.3.3" class="anchored" data-anchor-id="muitas-variáveis-nos-nomes-de-colunas">
+<span class="header-section-number">5.3.3</span> Muitas variáveis nos nomes de colunas</h3>
+<p>Uma situação mais desafiadora ocorre quando tem-se muitas partes de informação aglomeradas nos nomes das colunas, e você gostaria de armazená-las em variáveis separadas. Por exemplo, pegue o conjunto de dados <code>who2</code>, que é a fonte da <code>tabela1</code> e outros amigos que você viu acima:</p>
+<div class="cell">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">who2</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7,240 × 58
+   country      year sp_m_014 sp_m_1524 sp_m_2534 sp_m_3544 sp_m_4554 sp_m_5564
+   &lt;chr&gt;       &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+ 1 Afghanistan  1980       NA        NA        NA        NA        NA        NA
+ 2 Afghanistan  1981       NA        NA        NA        NA        NA        NA
+ 3 Afghanistan  1982       NA        NA        NA        NA        NA        NA
+ 4 Afghanistan  1983       NA        NA        NA        NA        NA        NA
+ 5 Afghanistan  1984       NA        NA        NA        NA        NA        NA
+ 6 Afghanistan  1985       NA        NA        NA        NA        NA        NA
+ 7 Afghanistan  1986       NA        NA        NA        NA        NA        NA
+ 8 Afghanistan  1987       NA        NA        NA        NA        NA        NA
+ 9 Afghanistan  1988       NA        NA        NA        NA        NA        NA
+10 Afghanistan  1989       NA        NA        NA        NA        NA        NA
+# ℹ 7,230 more rows
+# ℹ 50 more variables: sp_m_65 &lt;dbl&gt;, sp_f_014 &lt;dbl&gt;, sp_f_1524 &lt;dbl&gt;,
+#   sp_f_2534 &lt;dbl&gt;, sp_f_3544 &lt;dbl&gt;, sp_f_4554 &lt;dbl&gt;, sp_f_5564 &lt;dbl&gt;,
+#   sp_f_65 &lt;dbl&gt;, sn_m_014 &lt;dbl&gt;, sn_m_1524 &lt;dbl&gt;, sn_m_2534 &lt;dbl&gt;,
+#   sn_m_3544 &lt;dbl&gt;, sn_m_4554 &lt;dbl&gt;, sn_m_5564 &lt;dbl&gt;, sn_m_65 &lt;dbl&gt;,
+#   sn_f_014 &lt;dbl&gt;, sn_f_1524 &lt;dbl&gt;, sn_f_2534 &lt;dbl&gt;, sn_f_3544 &lt;dbl&gt;,
+#   sn_f_4554 &lt;dbl&gt;, sn_f_5564 &lt;dbl&gt;, sn_f_65 &lt;dbl&gt;, ep_m_014 &lt;dbl&gt;, …</code></pre>
+</div>
+</div>
+<p>Esse conjunto de dados, coletado pela Organização Mundial da Saúde (OMS)<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>, armazena informações sobre diagnósticos de tuberculose. Existem duas colunas que já são variáveis e parecem fáceis de interpretar: <code>country</code> e <code>year</code>. Em seguida vêm outras 56 colunas tais como <code>sp_m_014</code>, <code>ep_m_4554</code> e <code>rel_m_3544</code>. Se você olhar com cuidado para essas colunas por tempo suficiente, verá que há um padrão. Cada nome de coluna é composto por três partes separadas por <code>_</code>. A primeira parte, <code>sp</code>/<code>rel</code>/<code>ep</code>, descreve o método utilizado para o diagnóstico, a segunda parte, <code>m</code>/<code>f</code> é o gênero - <code>gender</code> (codificado como uma variável binária nesse conjunto de dados), e a terceira parte, <code>014</code>/<code>1524</code>/<code>2534</code>/<code>3544</code>/<code>4554</code>/<code>5564</code>/<code>65</code> é o intervalo de idade - <code>age</code> (<code>014</code> representa 0-14, por exemplo).</p>
+<p>Então, nesse caso temos seis partes de informação registrados em <code>who2</code>: o país (<em>country</em>) e o ano (<em>year</em>) (já nas colunas); o método diagnóstico, a categoria do gênero, e a categoria do intervalo de idade (contido nos outros nomes de colunas); e a contagem dos pacientes em naquela categoria (valores das células). Para organizar essas seis partes de informação em seis colunas separadas, utilizaremos <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> passando um vetor de nomes de colunas para o parâmetro <code>names_to</code>, instruções para separar, nas partes, os nomes originais das variáveis para o parâmetro <code>names_sep</code> e um nome de coluna para <code>values_to</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">who2</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span></span>
+<span>    cols <span class="op">=</span> <span class="op">!</span><span class="op">(</span><span class="va">country</span><span class="op">:</span><span class="va">year</span><span class="op">)</span>,</span>
+<span>    names_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"diagnosis"</span>, <span class="st">"gender"</span>, <span class="st">"age"</span><span class="op">)</span>, </span>
+<span>    names_sep <span class="op">=</span> <span class="st">"_"</span>,</span>
+<span>    values_to <span class="op">=</span> <span class="st">"count"</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 405,440 × 6
+   country      year diagnosis gender age   count
+   &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt;
+ 1 Afghanistan  1980 sp        m      014      NA
+ 2 Afghanistan  1980 sp        m      1524     NA
+ 3 Afghanistan  1980 sp        m      2534     NA
+ 4 Afghanistan  1980 sp        m      3544     NA
+ 5 Afghanistan  1980 sp        m      4554     NA
+ 6 Afghanistan  1980 sp        m      5564     NA
+ 7 Afghanistan  1980 sp        m      65       NA
+ 8 Afghanistan  1980 sp        f      014      NA
+ 9 Afghanistan  1980 sp        f      1524     NA
+10 Afghanistan  1980 sp        f      2534     NA
+# ℹ 405,430 more rows</code></pre>
+</div>
+</div>
+<p>Uma alternativa a <code>names_sep</code> é <code>names_pattern</code>, que você pode usar para extrair variáveis em nomenclaturas mais complicadas, desde que você já tenha aprendido a usar expressões regulares <a href="regexps.html" class="quarto-xref"><span>Capítulo 15</span></a>.</p>
+<p>Conceitualmente, essa seria só uma pequena variação desse caso mais simples que você acabou de ver. <a href="#fig-pivot-multiple-names" class="quarto-xref">Figura&nbsp;<span>5.6</span></a> mostra a ideia básica: agora, em vez da coluna de nomes pivotar para uma única coluna, ela pivota para múltiplas colunas. Você pode imaginar isso acontecendo em dois passos (primeiro pivotando e depois separando) mas no fundo, tudo ocorre em um único passo porque é mais rápido.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-pivot-multiple-names" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Um diagrama que utiliza cores para ilustrar como passar `names_sep` e múltiplos `names_to` cria múltiplas variáveis como saída. A entrada tem nomes de variáveis tipo &quot;x_1&quot; e &quot;y_2&quot; que serão separadas por por &quot;_&quot; para criar as colunas de nome e número na saída. Isso é parecido com o caso com um único `names_to`, mas o que seria apenas uma única variável de saída agora está separada em múltipals variáveis.">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pivot-multiple-names-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="diagrams/tidy-data/multiple-names.png" class="img-fluid figure-img" alt="Um diagrama que utiliza cores para ilustrar como passar `names_sep` e múltiplos `names_to` cria múltiplas variáveis como saída. A entrada tem nomes de variáveis tipo &quot;x_1&quot; e &quot;y_2&quot; que serão separadas por por &quot;_&quot; para criar as colunas de nome e número na saída. Isso é parecido com o caso com um único `names_to`, mas o que seria apenas uma única variável de saída agora está separada em múltipals variáveis." width="524">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pivot-multiple-names-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;5.6: Pivotar colunas com múltiplas partes de informação nos nomes significa que cada nome agora vai preencher valores em múltiplas colunas como saída.
+</figcaption></figure>
+</div>
+</div>
+</div>
+</section><section id="dados-e-nomes-de-variáveis-nos-cabeçalhos-das-colunas" class="level3" data-number="5.3.4"><h3 data-number="5.3.4" class="anchored" data-anchor-id="dados-e-nomes-de-variáveis-nos-cabeçalhos-das-colunas">
+<span class="header-section-number">5.3.4</span> Dados e nomes de variáveis nos cabeçalhos das colunas</h3>
+<p>O próximo degrau em complexidade é quando os nomes das colunas incluem uma mistura de nomes e valores das variáveis. Por exemplo, vamos pegar o conjunto de dados <code>nucleo_familiar</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">nucleo_familiar</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 5
+  familia datanascimento_crianca1 datanascimento_crianca2 nome_crianca1
+    &lt;int&gt; &lt;date&gt;                  &lt;date&gt;                  &lt;chr&gt;        
+1       1 1998-11-26              2000-01-29              Susan        
+2       2 1996-06-22              NA                      Mark         
+3       3 2002-07-11              2004-04-05              Sam          
+4       4 2004-10-10              2009-08-27              Craig        
+5       5 2000-12-05              2005-02-28              Parker       
+# ℹ 1 more variable: nome_crianca2 &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>Nesse conjunto temos dados de cinco famílias, com nomes e datas de nascimento de até duas crianças. O novo desafio é que nesses dados os nomes das colunas contêm os nomes de duas variáveis (<code>data_nascimento</code>, <code>nome)</code> e os valores de outra (criança - <code>crianca,</code> com valores 1 ou 2). Para resolver esse problema, novamente precisamods passar um vetor para <code>names_to</code>, mas dessa vamos vamos passar um parâmetro especial <code>".value"</code> (chamado de <em>sentinel</em>); esse parâmetro não é o nome de uma variável, mas um valor único que diz ao <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> para fazer algo diferente com ele. Isso sobrepõe o argumento <code>values_to</code> normal em favor do primeiro componente do nome da coluna pivotada, utilizado como nome da variável na saída da função.</p>
+<div class="cell">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">nucleo_familiar</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span></span>
+<span>    cols <span class="op">=</span> <span class="op">!</span><span class="va">familia</span>,</span>
+<span>    names_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">".value"</span>, <span class="st">"crianca"</span><span class="op">)</span>,</span>
+<span>    names_sep <span class="op">=</span> <span class="st">"_"</span>,</span>
+<span>    values_drop_na <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 4
+  familia crianca  datanascimento nome  
+    &lt;int&gt; &lt;chr&gt;    &lt;date&gt;         &lt;chr&gt; 
+1       1 crianca1 1998-11-26     Susan 
+2       1 crianca2 2000-01-29     Jose  
+3       2 crianca1 1996-06-22     Mark  
+4       3 crianca1 2002-07-11     Sam   
+5       3 crianca2 2004-04-05     Seth  
+6       4 crianca1 2004-10-10     Craig 
+7       4 crianca2 2009-08-27     Khai  
+8       5 crianca1 2000-12-05     Parker
+9       5 crianca2 2005-02-28     Gracie</code></pre>
+</div>
+</div>
+<p>Novamente utilizaremos <code>values_drop_na = TRUE</code>, uma vez que a forma da entrada força a criação de variáveis ausentes explícitas (ex: para famílias com apenas um filho).</p>
+<p><a href="#fig-pivot-names-and-values" class="quarto-xref">Figura&nbsp;<span>5.7</span></a> ilustra a ideia básica em um exemplo mais simples. Quando você utiliza <code>".value"</code> em <code>names_to</code>, a coluna de nomes dos dados de entrada contribui tanto para os valores quanto para os nomes das variáveis na saída.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-pivot-names-and-values" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Um diagrama que utiliza cores para ilustrar como o parâmetro &quot;.value&quot; funciona. A entrada tem nomes &quot;x_1&quot;, &quot;x_2&quot;, &quot;y_1&quot;, &quot;y_2&quot; e queremos usar o primeiro componente (&quot;x&quot;, &quot;y&quot;) como nome das variáveis e o segundo (&quot;1&quot;, &quot;2&quot;) como valor para a nova coluna &quot;num&quot;.">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pivot-names-and-values-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="diagrams/tidy-data/names-and-values.png" class="img-fluid figure-img" alt="Um diagrama que utiliza cores para ilustrar como o parâmetro &quot;.value&quot; funciona. A entrada tem nomes &quot;x_1&quot;, &quot;x_2&quot;, &quot;y_1&quot;, &quot;y_2&quot; e queremos usar o primeiro componente (&quot;x&quot;, &quot;y&quot;) como nome das variáveis e o segundo (&quot;1&quot;, &quot;2&quot;) como valor para a nova coluna &quot;num&quot;." width="474">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pivot-names-and-values-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;5.7: Pivotar com <code>names_to = c(".value", "num")</code> divide os nomes das colunas em dois componentes: a primeira parte determina o nome da coluna da saída, (<code>x</code> ou <code>y</code>), e a segunda parte determina o valore da coluna <code>num</code>.
+</figcaption></figure>
+</div>
+</div>
+</div>
+</section></section><section id="transformando-os-dados-para-o-formato-largo-widening-data" class="level2" data-number="5.4"><h2 data-number="5.4" class="anchored" data-anchor-id="transformando-os-dados-para-o-formato-largo-widening-data">
+<span class="header-section-number">5.4</span> Transformando os dados para o formato largo (<em>Widening data</em>)</h2>
+<p>Até então, utilizamos <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> para resolver um tipo comum de problemas no qual os valores foram movidos para os nomes de colunas. Agora vamos pivotar (HA HA) para <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider()</a></code>, que vai tornar o conjunto de dados mais <strong>largo</strong> (<em>wider</em>) ao aumentar o número de colunas e diminuir o número de linhas, auxiliando quando uma informação está espalhada em múltiplas linhas. Isso tende a aparecer menos na vida real, mas parece ser comum quando estamos lidando com dados governamentais.</p>
+<p>Começaremos dando uma olhada em <code>cms_paciente_experiencia</code>, um conjunto de dados de serviços do <em>Centers of Medicare and Medicaid</em> que coleta dados sobre as experiências dos pacientes:</p>
+<div class="cell">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cms_paciente_experiencia</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 500 × 5
+   organizacao_id organizacao_nome  medida_codigo medida_titulo taxa_performance
+   &lt;chr&gt;          &lt;chr&gt;             &lt;chr&gt;         &lt;chr&gt;                    &lt;dbl&gt;
+ 1 0446157747     USC CARE MEDICAL… CAHPS_GRP_1   Obtenção de …               63
+ 2 0446157747     USC CARE MEDICAL… CAHPS_GRP_2   O quão bem o…               87
+ 3 0446157747     USC CARE MEDICAL… CAHPS_GRP_3   CAHPS for MI…               86
+ 4 0446157747     USC CARE MEDICAL… CAHPS_GRP_5   Promoção e e…               57
+ 5 0446157747     USC CARE MEDICAL… CAHPS_GRP_8   Equipe do co…               85
+ 6 0446157747     USC CARE MEDICAL… CAHPS_GRP_12  Administraçã…               24
+ 7 0446162697     ASSOCIATION OF U… CAHPS_GRP_1   Obtenção de …               59
+ 8 0446162697     ASSOCIATION OF U… CAHPS_GRP_2   O quão bem o…               85
+ 9 0446162697     ASSOCIATION OF U… CAHPS_GRP_3   CAHPS for MI…               83
+10 0446162697     ASSOCIATION OF U… CAHPS_GRP_5   Promoção e e…               63
+# ℹ 490 more rows</code></pre>
+</div>
+</div>
+<p>A unidade principal sendo estudada é a organização, mas cada organização está espalhada em seis linhas, com uma linha para cada medição feita pela pesquisa. Nós podemos ver o conjunto completo dos valores de <code>medida_codigo</code> e <code>medida_titulo</code> utilizando a função <code><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cms_paciente_experiencia</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="va">medida_codigo</span>, <span class="va">medida_titulo</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  medida_codigo medida_titulo                                                 
+  &lt;chr&gt;         &lt;chr&gt;                                                         
+1 CAHPS_GRP_1   Obtenção de cuidados, consultas e informações no momento certo
+2 CAHPS_GRP_2   O quão bem os provedores se comunicam                         
+3 CAHPS_GRP_3   CAHPS for MIPS SSM: Patient's Rating of Provider              
+4 CAHPS_GRP_5   Promoção e educação em saúde                                  
+5 CAHPS_GRP_8   Equipe do consultório cortês e prestativa                     
+6 CAHPS_GRP_12  Administração dos recursos do paciente                        </code></pre>
+</div>
+</div>
+<p>Nenhuma dessas colunas irá gerar nomes espetaculares: <code>medida_codigo</code> não dá nenhuma pista quanto ao significado da variável e <code>medida_titulo</code> é uma longa frase, com espaços, Por enquanto, nós utilizaremos <code>medida_codigo</code> como a fonte de nossa nova coluna de nomes, mas em uma análise real você deveria considerar seu próprio nome de variável, que deve ser curto e informativo.</p>
+<p><code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider()</a></code> tem a interface oposta à <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code>: em vez de escolher o novo nome das colunas, nós precisamos fornecer as colunas existentes que definem os valores de (<code>values_from</code>) e o nome da coluna (<code>names_from</code>):</p>
+<div class="cell">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cms_paciente_experiencia</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span></span>
+<span>    names_from <span class="op">=</span> <span class="va">medida_codigo</span>,</span>
+<span>    values_from <span class="op">=</span> <span class="va">taxa_performance</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 500 × 9
+   organizacao_id organizacao_nome         medida_titulo CAHPS_GRP_1 CAHPS_GRP_2
+   &lt;chr&gt;          &lt;chr&gt;                    &lt;chr&gt;               &lt;dbl&gt;       &lt;dbl&gt;
+ 1 0446157747     USC CARE MEDICAL GROUP … Obtenção de …          63          NA
+ 2 0446157747     USC CARE MEDICAL GROUP … O quão bem o…          NA          87
+ 3 0446157747     USC CARE MEDICAL GROUP … CAHPS for MI…          NA          NA
+ 4 0446157747     USC CARE MEDICAL GROUP … Promoção e e…          NA          NA
+ 5 0446157747     USC CARE MEDICAL GROUP … Equipe do co…          NA          NA
+ 6 0446157747     USC CARE MEDICAL GROUP … Administraçã…          NA          NA
+ 7 0446162697     ASSOCIATION OF UNIVERSI… Obtenção de …          59          NA
+ 8 0446162697     ASSOCIATION OF UNIVERSI… O quão bem o…          NA          85
+ 9 0446162697     ASSOCIATION OF UNIVERSI… CAHPS for MI…          NA          NA
+10 0446162697     ASSOCIATION OF UNIVERSI… Promoção e e…          NA          NA
+# ℹ 490 more rows
+# ℹ 4 more variables: CAHPS_GRP_3 &lt;dbl&gt;, CAHPS_GRP_5 &lt;dbl&gt;, CAHPS_GRP_8 &lt;dbl&gt;,
+#   CAHPS_GRP_12 &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>A saída ainda não parece muito correta; parece que ainda precisamos de múltiplas linhas para cada organização. Isso é por que também precisamos dizer à <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider()</a></code> qual a coluna ou colunas têm valores que identificam cada linha de forma única; nesse caso são as variáveis que começam com <code>"org"</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cms_paciente_experiencia</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span></span>
+<span>    id_cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"organizacao"</span><span class="op">)</span>,</span>
+<span>    names_from <span class="op">=</span> <span class="va">medida_codigo</span>,</span>
+<span>    values_from <span class="op">=</span> <span class="va">taxa_performance</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 95 × 8
+   organizacao_id organizacao_nome           CAHPS_GRP_1 CAHPS_GRP_2 CAHPS_GRP_3
+   &lt;chr&gt;          &lt;chr&gt;                            &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+ 1 0446157747     USC CARE MEDICAL GROUP INC          63          87          86
+ 2 0446162697     ASSOCIATION OF UNIVERSITY…          59          85          83
+ 3 0547164295     BEAVER MEDICAL GROUP PC             49          NA          75
+ 4 0749333730     CAPE PHYSICIANS ASSOCIATE…          67          84          85
+ 5 0840104360     ALLIANCE PHYSICIANS INC             66          87          87
+ 6 0840109864     REX HOSPITAL INC                    73          87          84
+ 7 0840513552     SCL HEALTH MEDICAL GROUP …          58          83          76
+ 8 0941545784     GRITMAN MEDICAL CENTER INC          46          86          81
+ 9 1052612785     COMMUNITY MEDICAL GROUP L…          65          84          80
+10 1254237779     OUR LADY OF LOURDES MEMOR…          61          NA          NA
+# ℹ 85 more rows
+# ℹ 3 more variables: CAHPS_GRP_5 &lt;dbl&gt;, CAHPS_GRP_8 &lt;dbl&gt;, CAHPS_GRP_12 &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>Isso gera a saída que estávamos esperando.</p>
+<section id="como-funciona-a-função-pivot_wider" class="level3" data-number="5.4.1"><h3 data-number="5.4.1" class="anchored" data-anchor-id="como-funciona-a-função-pivot_wider">
+<span class="header-section-number">5.4.1</span> Como funciona a função <code>pivot_wider()</code>?</h3>
+<p>Para entender como a função <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider()</a></code> funciona, vamos novamente começar com um conjunto de dados bem simples. Agora temos dois pacientes com <code>id</code>s A e B, e temos três medições de pressão sanguínea para o paciente A e duas para o paciente B:</p>
+<div class="cell">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span></span>
+<span>  <span class="op">~</span><span class="va">id</span>, <span class="op">~</span><span class="va">medida</span>, <span class="op">~</span><span class="va">valor</span>,</span>
+<span>  <span class="st">"A"</span>,        <span class="st">"ps1"</span>,    <span class="fl">100</span>,</span>
+<span>  <span class="st">"B"</span>,        <span class="st">"ps1"</span>,    <span class="fl">140</span>,</span>
+<span>  <span class="st">"B"</span>,        <span class="st">"ps2"</span>,    <span class="fl">115</span>, </span>
+<span>  <span class="st">"A"</span>,        <span class="st">"ps2"</span>,    <span class="fl">120</span>,</span>
+<span>  <span class="st">"A"</span>,        <span class="st">"ps3"</span>,    <span class="fl">105</span></span>
+<span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Vamos pegar os valores da coluna <code>valor</code> e os nomes da coluna <code>medida</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span></span>
+<span>    names_from <span class="op">=</span> <span class="va">medida</span>,</span>
+<span>    values_from <span class="op">=</span> <span class="va">valor</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  id      ps1   ps2   ps3
+  &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 A       100   120   105
+2 B       140   115    NA</code></pre>
+</div>
+</div>
+<p>Para iniciar o processo, a função <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider()</a></code> precisa primeiramente entender o que será distribuído para as linhas e colunas. Os novos nomes de coluna serão os valores únicos de <code>medida</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="va">medida</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "ps1" "ps2" "ps3"</code></pre>
+</div>
+</div>
+<p>Por padrão, as linhas da saída são determinadas por todas as demais variáveis que não estão indo para os novos nomes ou valores. Essas são chamadas <code>id_cols</code>. Aqui temos apenas uma coluna, mas em geral, pode haver qualquer número delas.</p>
+<div class="cell">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">medida</span>, <span class="op">-</span><span class="va">valor</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 1
+  id   
+  &lt;chr&gt;
+1 A    
+2 B    </code></pre>
+</div>
+</div>
+<p>A função <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider()</a></code> então combina esses resultados para gerar um <em>data frame</em> vazio:</p>
+<div class="cell">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">medida</span>, <span class="op">-</span><span class="va">valor</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NA</span>, y <span class="op">=</span> <span class="cn">NA</span>, z <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  id    x     y     z    
+  &lt;chr&gt; &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt;
+1 A     NA    NA    NA   
+2 B     NA    NA    NA   </code></pre>
+</div>
+</div>
+<p>E em seguida, preenche todos os valores ausentes com os dados de entrada. Nesse caso, nem todas as células da saída possuem um valor correspondente na entrada visto que não temos a terceira medição de pressão para o paciente B, então aquela célula permanecerá vazia. Voltaremos a essa ideia de que a <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider()</a></code> pode “produzir” valores ausentes em <a href="missing-values.html" class="quarto-xref"><span>Capítulo 18</span></a>.</p>
+<p>Você pode também estar se perguntando se há várias linhas na entrada que correspondem a apenas uma célula na saída. O exemplo abaixo, possui duas linhas que correspondem ao <code>id</code> “A” à medida “ps1”:</p>
+<div class="cell">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span></span>
+<span>  <span class="op">~</span><span class="va">id</span>, <span class="op">~</span><span class="va">medida</span>, <span class="op">~</span><span class="va">valor</span>,</span>
+<span>  <span class="st">"A"</span>,        <span class="st">"ps1"</span>,    <span class="fl">100</span>,</span>
+<span>  <span class="st">"A"</span>,        <span class="st">"ps1"</span>,    <span class="fl">102</span>,</span>
+<span>  <span class="st">"A"</span>,        <span class="st">"ps2"</span>,    <span class="fl">120</span>,</span>
+<span>  <span class="st">"B"</span>,        <span class="st">"ps1"</span>,    <span class="fl">140</span>, </span>
+<span>  <span class="st">"B"</span>,        <span class="st">"ps2"</span>,    <span class="fl">115</span></span>
+<span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Se tentarmos pivotar essa tabela teremos uma saída que contém estruturas chamadas <strong>colunas de listas</strong> (<em>list-columns</em>), sobre as quais você aprenderá mais em <a href="rectangling.html" class="quarto-xref"><span>Capítulo 23</span></a>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span></span>
+<span>    names_from <span class="op">=</span> <span class="va">medida</span>,</span>
+<span>    values_from <span class="op">=</span> <span class="va">valor</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Values from `valor` are not uniquely identified; output will contain list-cols.
+• Use `values_fn = list` to suppress this warning.
+• Use `values_fn = {summary_fun}` to summarise duplicates.
+• Use the following dplyr code to identify duplicates.
+  {data} |&gt;
+  dplyr::summarise(n = dplyr::n(), .by = c(id, medida)) |&gt;
+  dplyr::filter(n &gt; 1L)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  id    ps1       ps2      
+  &lt;chr&gt; &lt;list&gt;    &lt;list&gt;   
+1 A     &lt;dbl [2]&gt; &lt;dbl [1]&gt;
+2 B     &lt;dbl [1]&gt; &lt;dbl [1]&gt;</code></pre>
+</div>
+</div>
+<p>Como você ainda não sabe como trabalhar com esse tipo de estrutura, você deve seguir as dicas que aparecem na mensagem de alerta (<em>warning</em>) para entender onde está o problema:</p>
+<div class="cell">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">medida</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">n</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  id    medida     n
+  &lt;chr&gt; &lt;chr&gt;  &lt;int&gt;
+1 A     ps1        2</code></pre>
+</div>
+</div>
+<p>Aí então, você fica a cargo de entender o que deu de errado com os dados e ajustar os problemas já ocorridos ou utilizar suas habilidades de agrupar e resumir os dados originais para se certificar que que cada combinação dos valores de linhas e colunas estejam em apenas uma linha.</p>
+</section></section><section id="resumo" class="level2" data-number="5.5"><h2 data-number="5.5" class="anchored" data-anchor-id="resumo">
+<span class="header-section-number">5.5</span> Resumo</h2>
+<p>Nesse capítulo você aprendeu sobre dados no formato <em>tidy</em>: dados que possuem variáveis nas colunas e observações nas linhas. Dados nesse formato facilitam o trabalho no tidyverse, pois sua estrutura consistente é entendida pela maioria das funções. O principal desafio, então, é transformar dados provenientes de quaisquer estruturas que você receber para o formato <em>tidy</em>. Para esse fim, você aprendeu sobre <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> e <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider()</a></code> que permitem a organização de vários conjuntos de dados que ainda não estejam no formato <em>tidy</em>. Os exemplos apresentados aqui são uma seleção dos vários presentes em <code><a href="https://tidyr.tidyverse.org/articles/pivot.html">vignette("pivot", package = "tidyr")</a></code>, então, se você encontrar algum problema com o qual esse capítulo ainda não é capaz de te ajudar, é uma boa ideia checar nessa <em>vignette</em>.</p>
+<p>Um outro desafio é o fato de que para certos conjuntos de dados, pode ser impossível especificar se a versão longa (<em>long</em>) ou larga (<em>wide</em>) é a versão <em>tidy</em>. Isso é, em parte, um reflexo da nossa definição de dados <em>tidy</em>, em que dizemos que cada coluna deve conter uma variável, mas não definimos, de fato, <strong>o que é</strong> uma variável (e fazer isso é surpreendentemente difícil.) É totalmente aceitável dizer, de uma forma pragmática, que uma variável é qualquer coisa que facilite sua análise. Então, se tiver difícil descobrir como fazer algum tipo de cálculo ou análise, considere alterar a forma como seus dados estão organizados; não tenha medo de voltar para um formato <em>untidy</em>, transformá-lo e depois reorganizá-lo conforme necessário!</p>
+<p>Se você gostou desse capítulo e quiser saber mais sobre a teoria por trás dele, você pode se aprofundar sobre a história e os fundamentos teóricos no artigo <a href="https://www.jstatsoft.org/article/view/v059i10">Tidy Data</a> publicado no Journal of Statistical Software.</p>
+<p>E agora que você já está escrevendo uma quantidade considerável de código em R, é a hora de aprender um pouco mais sobre como organizar o seu código em arquivos e diretórios. No próximo capítulo, você irá aprender sobre todas as vantagens dos <em>scripts</em> e projetos, e algumas das várias ferramentas que eles disponibilizam para tornar sua vida mais fácil.</p>
+
+
+</section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+<ol>
+<li id="fn1"><p>A música será incluída aos dados desde que tenha estado no top 100 em algum momento do ano 2000, e então será monitorada por até 72 semanas após a primeira aparição.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Voltaremos a essas ideias em <a href="missing-values.html" class="quarto-xref"><span>Capítulo 18</span></a>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p><strong>Nota de tradução</strong>: do inglês <em>World Health Organisation</em> - WHO que é nome do conjunto de dados.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiada");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiada");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./workflow-style.html" class="pagination-link  aria-label=" de="" trabalho:="" estilo="" c="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Fluxo de trabalho: estilo de código</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./workflow-scripts.html" class="pagination-link" aria-label="<span class='chapter-number'>6</span>&nbsp; <span class='chapter-title'>Workflow: scripts and projects</span>">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Workflow: scripts and projects</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>R para Ciência de Dados (2ª edição) foi escrito por Hadley Wickham, Mine Çetinkaya-Rundel, e Garrett Grolemund.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cienciadedatos/pt-r4ds/edit/main/data-tidy.qmd" class="toc-action"><i class="bi bi-github"></i>Editar essa página</a></li><li><a href="https://github.com/cienciadedatos/pt-r4ds/issues/new" class="toc-action"><i class="bi empty"></i>Criar uma issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>Este livro foi contruído com <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+</body></html>
