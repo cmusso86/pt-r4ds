@@ -488,10 +488,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="header-section-number">26.1.1</span> Prerequisites</h3>
 <p>In this chapter, we’ll focus on tools provided by dplyr and purrr, both core members of the tidyverse. You’ve seen dplyr before, but <a href="http://purrr.tidyverse.org/">purrr</a> is new. We’re just going to use a couple of purrr functions in this chapter, but it’s a great package to explore as you improve your programming skills.</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: package 'tidyr' was built under R version 4.2.3</span></span>
-<span><span class="co">#&gt; Warning: package 'dplyr' was built under R version 4.2.3</span></span>
-<span><span class="co">#&gt; Warning: package 'stringr' was built under R version 4.2.3</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section></section><section id="sec-across" class="level2" data-number="26.2"><h2 data-number="26.2" class="anchored" data-anchor-id="sec-across">
 <span class="header-section-number">26.2</span> Modifying multiple columns</h2>
@@ -578,13 +575,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html">everything</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Error in `summarize()`:</span></span>
 <span><span class="co">#&gt; ℹ In argument: `across(everything(), median())`.</span></span>
-<span><span class="co">#&gt; Caused by error in `is.factor()`:</span></span>
+<span><span class="co">#&gt; Caused by error in `median.default()`:</span></span>
 <span><span class="co">#&gt; ! argument "x" is missing, with no default</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This error arises because you’re calling the function with no input, e.g.:</p>
 <div class="cell">
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in is.factor(x): argument "x" is missing, with no default</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="co">#&gt; Error in median.default(): argument "x" is missing, with no default</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="calling-multiple-functions" class="level3" data-number="26.2.3"><h3 data-number="26.2.3" class="anchored" data-anchor-id="calling-multiple-functions">
 <span class="header-section-number">26.2.3</span> Calling multiple functions</h3>
@@ -1285,7 +1282,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">con</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"gapminder"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # Source:   table&lt;gapminder&gt; [0 x 6]</span></span>
-<span><span class="co">#&gt; # Database: DuckDB v0.9.1 [root@Darwin 21.6.0:R 4.2.1/:memory:]</span></span>
+<span><span class="co">#&gt; # Database: DuckDB v0.9.2 [unknown@Linux 6.2.0-1019-azure:R 4.3.2/:memory:]</span></span>
 <span><span class="co">#&gt; # ℹ 6 variables: country &lt;chr&gt;, continent &lt;chr&gt;, lifeExp &lt;dbl&gt;, pop &lt;dbl&gt;,</span></span>
 <span><span class="co">#&gt; #   gdpPercap &lt;dbl&gt;, year &lt;dbl&gt;</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -1312,13 +1309,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"gapminder"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # Source:   SQL [?? x 2]</span></span>
-<span><span class="co">#&gt; # Database: DuckDB v0.9.1 [root@Darwin 21.6.0:R 4.2.1/:memory:]</span></span>
+<span><span class="co">#&gt; # Database: DuckDB v0.9.2 [unknown@Linux 6.2.0-1019-azure:R 4.3.2/:memory:]</span></span>
 <span><span class="co">#&gt;    year     n</span></span>
 <span><span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1  1977   142</span></span>
-<span><span class="co">#&gt; 2  1987   142</span></span>
-<span><span class="co">#&gt; 3  2007   142</span></span>
-<span><span class="co">#&gt; 4  1967   142</span></span>
+<span><span class="co">#&gt; 1  1967   142</span></span>
+<span><span class="co">#&gt; 2  1977   142</span></span>
+<span><span class="co">#&gt; 3  1987   142</span></span>
+<span><span class="co">#&gt; 4  2007   142</span></span>
 <span><span class="co">#&gt; 5  1952   142</span></span>
 <span><span class="co">#&gt; 6  1957   142</span></span>
 <span><span class="co">#&gt; # ℹ more rows</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
