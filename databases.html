@@ -225,7 +225,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./layers.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Layers</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Camadas</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -517,11 +517,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Setting up a client-server or cloud DBMS would be a pain for this book, so we’ll instead use an in-process DBMS that lives entirely in an R package: duckdb. Thanks to the magic of DBI, the only difference between using duckdb and any other DBMS is how you’ll connect to the database. This makes it great to teach with because you can easily run this code as well as easily take what you learn and apply it elsewhere.</p>
 <p>Connecting to duckdb is particularly simple because the defaults create a temporary database that is deleted when you quit R. That’s great for learning because it guarantees that you’ll start from a clean slate every time you restart R:</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbConnect.html">dbConnect</a></span><span class="op">(</span><span class="fu">duckdb</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/duckdb/man/duckdb.html">duckdb</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbConnect.html">dbConnect</a></span><span class="op">(</span><span class="fu">duckdb</span><span class="fu">::</span><span class="fu"><a href="https://r.duckdb.org/reference/duckdb.html">duckdb</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>duckdb is a high-performance database that’s designed very much for the needs of a data scientist. We use it here because it’s very easy to get started with, but it’s also capable of handling gigabytes of data with great speed. If you want to use duckdb for a real data analysis project, you’ll also need to supply the <code>dbdir</code> argument to make a persistent database and tell duckdb where to save it. Assuming you’re using a project (<a href="workflow-scripts.html" class="quarto-xref"><span>Capítulo 6</span></a>), it’s reasonable to store it in the <code>duckdb</code> directory of the current project:</p>
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbConnect.html">dbConnect</a></span><span class="op">(</span><span class="fu">duckdb</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/duckdb/man/duckdb.html">duckdb</a></span><span class="op">(</span><span class="op">)</span>, dbdir <span class="op">=</span> <span class="st">"duckdb"</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbConnect.html">dbConnect</a></span><span class="op">(</span><span class="fu">duckdb</span><span class="fu">::</span><span class="fu"><a href="https://r.duckdb.org/reference/duckdb.html">duckdb</a></span><span class="op">(</span><span class="op">)</span>, dbdir <span class="op">=</span> <span class="st">"duckdb"</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="sec-load-data" class="level3" data-number="21.3.2"><h3 data-number="21.3.2" class="anchored" data-anchor-id="sec-load-data">
 <span class="header-section-number">21.3.2</span> Load some data</h3>
@@ -581,7 +581,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">diamonds_db</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"diamonds"</span><span class="op">)</span></span>
 <span><span class="va">diamonds_db</span></span>
 <span><span class="co">#&gt; # Source:   table&lt;diamonds&gt; [?? x 10]</span></span>
-<span><span class="co">#&gt; # Database: DuckDB v0.9.2 [unknown@Linux 6.2.0-1019-azure:R 4.3.2/:memory:]</span></span>
+<span><span class="co">#&gt; # Database: DuckDB v0.10.0 [root@Darwin 21.6.0:R 4.3.3/:memory:]</span></span>
 <span><span class="co">#&gt;   carat cut       color clarity depth table price     x     y     z</span></span>
 <span><span class="co">#&gt;   &lt;dbl&gt; &lt;fct&gt;     &lt;fct&gt; &lt;fct&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1  0.23 Ideal     E     SI2      61.5    55   326  3.95  3.98  2.43</span></span>
@@ -618,7 +618,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span></span>
 <span><span class="va">big_diamonds_db</span></span>
 <span><span class="co">#&gt; # Source:   SQL [?? x 5]</span></span>
-<span><span class="co">#&gt; # Database: DuckDB v0.9.2 [unknown@Linux 6.2.0-1019-azure:R 4.3.2/:memory:]</span></span>
+<span><span class="co">#&gt; # Database: DuckDB v0.10.0 [root@Darwin 21.6.0:R 4.3.3/:memory:]</span></span>
 <span><span class="co">#&gt;   carat cut       color clarity price</span></span>
 <span><span class="co">#&gt;   &lt;dbl&gt; &lt;fct&gt;     &lt;fct&gt; &lt;fct&gt;   &lt;int&gt;</span></span>
 <span><span class="co">#&gt; 1  1.54 Premium   E     VS2     15002</span></span>
@@ -846,15 +846,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span><span class="co">#&gt; Use `na.rm = TRUE` to silence this warning</span></span>
 <span><span class="co">#&gt; This warning is displayed once every 8 hours.</span></span>
 <span><span class="co">#&gt; # Source:   SQL [?? x 2]</span></span>
-<span><span class="co">#&gt; # Database: DuckDB v0.9.2 [unknown@Linux 6.2.0-1019-azure:R 4.3.2/:memory:]</span></span>
-<span><span class="co">#&gt;   dest  delay</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 IAH    4.24</span></span>
-<span><span class="co">#&gt; 2 ATL   11.3 </span></span>
-<span><span class="co">#&gt; 3 PVD   16.2 </span></span>
-<span><span class="co">#&gt; 4 MDW   12.4 </span></span>
-<span><span class="co">#&gt; 5 MCO    5.45</span></span>
-<span><span class="co">#&gt; 6 CLT    7.36</span></span>
+<span><span class="co">#&gt; # Database: DuckDB v0.10.0 [root@Darwin 21.6.0:R 4.3.3/:memory:]</span></span>
+<span><span class="co">#&gt;   dest   delay</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;  &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 CLT    7.36 </span></span>
+<span><span class="co">#&gt; 2 MDW   12.4  </span></span>
+<span><span class="co">#&gt; 3 HOU    7.18 </span></span>
+<span><span class="co">#&gt; 4 SDF   12.7  </span></span>
+<span><span class="co">#&gt; 5 LAS    0.258</span></span>
+<span><span class="co">#&gt; 6 PHX    2.10 </span></span>
 <span><span class="co">#&gt; # ℹ more rows</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>If you want to learn more about how <code>NULL</code>s work, you might enjoy “<a href="https://modern-sql.com/concept/three-valued-logic"><em>Three valued logic</em></a>” by Markus Winand.</p>

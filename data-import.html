@@ -225,7 +225,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./layers.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Layers</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Camadas</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -845,9 +845,9 @@ Tabela&nbsp;7.1: Data from the students.csv file as a table.
 <div class="cell">
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://readr.tidyverse.org/reference/problems.html">problems</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 5</span></span>
-<span><span class="co">#&gt;     row   col expected actual file                            </span></span>
-<span><span class="co">#&gt;   &lt;int&gt; &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt;                           </span></span>
-<span><span class="co">#&gt; 1     3     1 a double .      /tmp/Rtmp1PYqWN/file1e2113179351</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="co">#&gt;     row   col expected actual file                                           </span></span>
+<span><span class="co">#&gt;   &lt;int&gt; &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt;                                          </span></span>
+<span><span class="co">#&gt; 1     3     1 a double .      /private/var/folders/st/0346cszj61928zc133bfr8…</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This tells us that there was a problem in row 3, col 1 where readr expected a double but got a <code>.</code>. That suggests this dataset uses <code>.</code> for missing values. So then we set <code>na = "."</code>, the automatic guessing succeeds, giving us the numeric column that we want:</p>
 <div class="cell">

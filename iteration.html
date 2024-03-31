@@ -225,7 +225,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./layers.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Layers</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Camadas</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -1253,8 +1253,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Sometimes when working with many files at once, it’s not possible to fit all your data into memory at once, and you can’t do <code>map(files, read_csv)</code>. One approach to deal with this problem is to load your data into a database so you can access just the bits you need with dbplyr.</p>
 <p>If you’re lucky, the database package you’re using will provide a handy function that takes a vector of paths and loads them all into the database. This is the case with duckdb’s <code>duckdb_read_csv()</code>:</p>
 <div class="cell">
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbConnect.html">dbConnect</a></span><span class="op">(</span><span class="fu">duckdb</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/duckdb/man/duckdb.html">duckdb</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">duckdb</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/duckdb/man/duckdb_read_csv.html">duckdb_read_csv</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"gapminder"</span>, <span class="va">paths</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbConnect.html">dbConnect</a></span><span class="op">(</span><span class="fu">duckdb</span><span class="fu">::</span><span class="fu"><a href="https://r.duckdb.org/reference/duckdb.html">duckdb</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">duckdb</span><span class="fu">::</span><span class="fu"><a href="https://r.duckdb.org/reference/duckdb_read_csv.html">duckdb_read_csv</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"gapminder"</span>, <span class="va">paths</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This would work well here, but we don’t have csv files, instead we have excel spreadsheets. So we’re going to have to do it “by hand”. Learning to do it by hand will also help you when you have a bunch of csvs and the database that you’re working with doesn’t have one function that will load them all in.</p>
 <p>We need to start by creating a table that will fill in with data. The easiest way to do this is by creating a template, a dummy data frame that contains all the columns we want, but only a sampling of the data. For the gapminder data, we can make that template by reading a single file and adding the year to it:</p>
@@ -1275,14 +1275,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Now we can connect to the database, and use <code><a href="https://dbi.r-dbi.org/reference/dbCreateTable.html">DBI::dbCreateTable()</a></code> to turn our template into a database table:</p>
 <div class="cell">
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbConnect.html">dbConnect</a></span><span class="op">(</span><span class="fu">duckdb</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/duckdb/man/duckdb.html">duckdb</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbConnect.html">dbConnect</a></span><span class="op">(</span><span class="fu">duckdb</span><span class="fu">::</span><span class="fu"><a href="https://r.duckdb.org/reference/duckdb.html">duckdb</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbCreateTable.html">dbCreateTable</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"gapminder"</span>, <span class="va">template</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>dbCreateTable()</code> doesn’t use the data in <code>template</code>, just the variable names and types. So if we inspect the <code>gapminder</code> table now you’ll see that it’s empty but it has the variables we need with the types we expect:</p>
 <div class="cell">
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">con</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"gapminder"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # Source:   table&lt;gapminder&gt; [0 x 6]</span></span>
-<span><span class="co">#&gt; # Database: DuckDB v0.9.2 [unknown@Linux 6.2.0-1019-azure:R 4.3.2/:memory:]</span></span>
+<span><span class="co">#&gt; # Database: DuckDB v0.10.0 [root@Darwin 21.6.0:R 4.3.3/:memory:]</span></span>
 <span><span class="co">#&gt; # ℹ 6 variables: country &lt;chr&gt;, continent &lt;chr&gt;, lifeExp &lt;dbl&gt;, pop &lt;dbl&gt;,</span></span>
 <span><span class="co">#&gt; #   gdpPercap &lt;dbl&gt;, year &lt;dbl&gt;</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -1309,15 +1309,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"gapminder"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # Source:   SQL [?? x 2]</span></span>
-<span><span class="co">#&gt; # Database: DuckDB v0.9.2 [unknown@Linux 6.2.0-1019-azure:R 4.3.2/:memory:]</span></span>
+<span><span class="co">#&gt; # Database: DuckDB v0.10.0 [root@Darwin 21.6.0:R 4.3.3/:memory:]</span></span>
 <span><span class="co">#&gt;    year     n</span></span>
 <span><span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1  1967   142</span></span>
-<span><span class="co">#&gt; 2  1977   142</span></span>
-<span><span class="co">#&gt; 3  1987   142</span></span>
-<span><span class="co">#&gt; 4  2007   142</span></span>
-<span><span class="co">#&gt; 5  1952   142</span></span>
-<span><span class="co">#&gt; 6  1957   142</span></span>
+<span><span class="co">#&gt; 1  1977   142</span></span>
+<span><span class="co">#&gt; 2  1987   142</span></span>
+<span><span class="co">#&gt; 3  1967   142</span></span>
+<span><span class="co">#&gt; 4  1952   142</span></span>
+<span><span class="co">#&gt; 5  1957   142</span></span>
+<span><span class="co">#&gt; 6  1972   142</span></span>
 <span><span class="co">#&gt; # ℹ more rows</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="writing-csv-files" class="level3" data-number="26.4.2"><h3 data-number="26.4.2" class="anchored" data-anchor-id="writing-csv-files">
