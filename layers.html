@@ -503,11 +503,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p><code>classe</code>: Tipo do carro. Uma variável categórica.</p></li>
 </ol>
 <p>Vamos começar visualizando a relação entre <code>cilindrada</code> e <code>rodovia</code> para várias <code>classe</code>s de carros. Podemos fazer isso com um gráfico de dispersão no qual as variáveis numéricas são mapeadas nos atributos estéticos <code>x</code> e <code>y</code> e a variável categórica é mapeada em um atributo estético como <code>color</code> (cor) ou <code>shape</code> (forma).</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Left</span></span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Esquerda</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cilindrada</span>, y <span class="op">=</span> <span class="va">rodovia</span>, color <span class="op">=</span> <span class="va">classe</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Right</span></span>
+<span><span class="co"># Direita</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cilindrada</span>, y <span class="op">=</span> <span class="va">rodovia</span>, shape <span class="op">=</span> <span class="va">classe</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: The shape palette can deal with a maximum of 6 discrete values because more</span></span>
@@ -538,12 +538,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </blockquote>
 <p>Uma vez que o ggplot2, por padrão, usa apenas seis formas por vez, grupos que ultrapassem essa quantidade não serão plotados quando você usar o atributo estético <code>shape</code> (forma). O segundo aviso está relacionado a esse primeiro: há 62 SUVs na base de dados e elas não foram plotadas.</p>
 <p>De forma semelhante, podemos também mapear a variável <code>classe</code> nos atributos estéticos <code>size</code> (tamanho) ou <code>alpha</code> (transparência), as quais controlarão o tamanho e a transparência dos pontos, respectivamente.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Left</span></span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Esquerda</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cilindrada</span>, y <span class="op">=</span> <span class="va">rodovia</span>, size <span class="op">=</span> <span class="va">classe</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Using size for a discrete variable is not advised.</span></span>
 <span></span>
-<span><span class="co"># Right</span></span>
+<span><span class="co"># Direita</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cilindrada</span>, y <span class="op">=</span> <span class="va">rodovia</span>, alpha <span class="op">=</span> <span class="va">classe</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Using alpha for a discrete variable is not advised.</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -632,21 +632,21 @@ Figura&nbsp;9.1: O R apresenta 25 formas que são identificadas por números. Al
 <p>Os dois gráficos contém a mesma variável x, a mesma variável y e descrevem os mesmos dados. Mas os gráficos não são idênticos. Cada um desses gráficos usa uma <code>geom</code> diferente para representar esses dados. O gráfico à esquerda usa a geometria de ponto (<code>point</code>), enquanto o gráfico à direita usa a geometria de suavização (<code>smooth</code>) e inclui uma linha suavizada ajustada aos dados.</p>
 <p>Para alterar a geometria do seu gráfico, basta mudar a função <code>geom</code> adicionada ao <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot()</a></code>. Por exemplo, para criar os gráficos acima você pode usar o seguinte código:</p>
 <div class="cell">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Left</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Esquerda</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cilindrada</span>, y <span class="op">=</span> <span class="va">rodovia</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Right</span></span>
+<span><span class="co"># Direita</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cilindrada</span>, y <span class="op">=</span> <span class="va">rodovia</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; `geom_smooth()` using method = 'loess' and formula = 'y ~ x'</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Cada função <code>geom</code> no ggplot2 recebe um argumento <code>mapping</code>, que pode ser definido tanto localmente, na camada <code>geom</code>, quanto globalmente, na camada <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot()</a></code>. No entanto, nem todos os atributos estéticos irão funcionar com todas as geometrias. Você pode definir o formato (<code>shape</code>) de um ponto, mas não pode definir o “formato” de uma linha. Se você tentar fazer isso, o ggplot2 ignorará silenciosamente esse mapeamento estético. Por outro lado, você <em>pode</em> definir o tipo de linha (<code>linetype</code>) de uma linha. A função <code><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth()</a></code> irá desenhar uma linha diferente, com um tipo diferente de linha, para cada valor da variável que for mapeada em <code>linetype</code>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Left</span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Esquerda</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cilindrada</span>, y <span class="op">=</span> <span class="va">rodovia</span>, shape <span class="op">=</span> <span class="va">tracao</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Right</span></span>
+<span><span class="co"># Direita</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cilindrada</span>, y <span class="op">=</span> <span class="va">rodovia</span>, linetype <span class="op">=</span> <span class="va">tracao</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell quarto-layout-panel" data-layout-ncol="2">
@@ -674,7 +674,7 @@ Figura&nbsp;9.1: O R apresenta 25 formas que são identificadas por números. Al
 </div>
 <p>Observe que esse gráfico contém duas geometrias no mesmo gráfico.</p>
 <p>Muitas geometrias, como o <code><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth()</a></code>, usam uma única geometria para representar várias linhas de dados. Para essas geometrias, você pode mapear o atributo estético <code>group</code> (grupo) a uma variável categórica para desenhar várias geometrias. O ggplot2 irá desenhar uma geometria separada para cada valor único da variável de agrupamento. Na prática, o ggplot2 agrupará automaticamente os dados para essas geometrias sempre que você mapear um atributo estético a uma variável discreta (como no exemplo com <code>linetype</code>). É conveniente contar com esse recurso porque o atributo estético <code>group</code>, por si só, não adiciona às geoms uma legenda ou características que permitam distinguir os grupos.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Left</span></span>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Esquerda</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cilindrada</span>, y <span class="op">=</span> <span class="va">rodovia</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -682,7 +682,7 @@ Figura&nbsp;9.1: O R apresenta 25 formas que são identificadas por números. Al
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cilindrada</span>, y <span class="op">=</span> <span class="va">rodovia</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>group <span class="op">=</span> <span class="va">tracao</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Right</span></span>
+<span><span class="co"># Direita</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cilindrada</span>, y <span class="op">=</span> <span class="va">rodovia</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">tracao</span><span class="op">)</span>, show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell quarto-layout-panel" data-layout-ncol="3">
@@ -730,7 +730,7 @@ Figura&nbsp;9.1: O R apresenta 25 formas que são identificadas por números. Al
 </div>
 </div>
 <p>As geometrias são os blocos de construção base do ggplot2. Você pode transformar completamente a aparência do seu gráfico ao alterar as geometrias que o compõem, e geoms diferentes podem mostrar diferentes características dos seus dados. Por exemplo, o histograma e o gráfico de densidade abaixo mostram que a distribuição de eficiência de combustível na rodovia é bimodal e assimétrica à direita, enquanto o boxplot mostra que há dois possíveis <em>outliers</em> (valores atípicos).</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Left</span></span>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Esquerda</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">rodovia</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span><span class="op">(</span>binwidth <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span></span>
@@ -738,7 +738,7 @@ Figura&nbsp;9.1: O R apresenta 25 formas que são identificadas por números. Al
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">rodovia</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html">geom_density</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Right</span></span>
+<span><span class="co"># Direita</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">rodovia</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell quarto-layout-panel" data-layout-ncol="3">
@@ -1012,11 +1012,11 @@ Figura&nbsp;9.2: Ao criarmos um gráfico de barras, começamos com os dados brut
 </ol></section></section><section id="ajustes-de-posição" class="level2" data-number="9.6"><h2 data-number="9.6" class="anchored" data-anchor-id="ajustes-de-posição">
 <span class="header-section-number">9.6</span> Ajustes de posição</h2>
 <p>Há mais um elemento mágico associado aos gráficos de barras. Você pode colorir um gráfico de barras usando o atributo estético <code>color</code> ou, de maneira mais útil, o atributo estético <code>fill</code>:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Left</span></span>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Esquerda</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">tracao</span>, color <span class="op">=</span> <span class="va">tracao</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Right</span></span>
+<span><span class="co"># Direita</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">tracao</span>, fill <span class="op">=</span> <span class="va">tracao</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell quarto-layout-panel" data-layout-ncol="2">
@@ -1044,11 +1044,11 @@ Figura&nbsp;9.2: Ao criarmos um gráfico de barras, começamos com os dados brut
 <ul>
 <li>
 <p><code>position = "identity"</code> irá colocar cada objeto exatamente onde ele se encontra no contexto do gráfico. Essa opção não é muito útil para barras, porque elas se sobrepõem. Para visualizar essa sobreposição, precisamos tornar as barras ligeiramente transparentes, definindo <code>alpha</code> igual a um valor pequeno, ou completamente transparentes, definindo <code>fill = NA</code>.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Left</span></span>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Esquerda</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">tracao</span>, fill <span class="op">=</span> <span class="va">classe</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">5</span>, position <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Right</span></span>
+<span><span class="co"># Direita</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">tracao</span>, color <span class="op">=</span> <span class="va">classe</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NA</span>, position <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell quarto-layout-panel" data-layout-ncol="2">
@@ -1066,11 +1066,11 @@ Figura&nbsp;9.2: Ao criarmos um gráfico de barras, começamos com os dados brut
 <li><p><code>position = "fill"</code> funciona como <code>position = "stacked"</code>, mas faz com que cada conjunto de barras empilhadas tenha a mesma altura. Isso facilita a comparação de proporções entre grupos.</p></li>
 <li>
 <p><code>position = "dodge"</code> coloca objetos sobrepostos diretamente <em>ao lado</em> um do outro. Isso facilita a comparação de valores individuais.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Left</span></span>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Esquerda</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">tracao</span>, fill <span class="op">=</span> <span class="va">classe</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"fill"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Right</span></span>
+<span><span class="co"># Direita</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">milhas</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">tracao</span>, fill <span class="op">=</span> <span class="va">classe</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"dodge"</span><span class="op">)</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell quarto-layout-panel" data-layout-ncol="2">
